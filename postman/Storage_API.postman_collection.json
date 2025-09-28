@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "random-uuid",
+		"name": "Storage API",
+		"description": "Collection for Storage API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Upload File",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer your-jwt-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "bucketName",
+							"value": "your-bucket-name",
+							"type": "text"
+						},
+						{
+							"key": "metadata",
+							"value": "{\"key1\":\"value1\",\"key2\":\"value2\"}",
+							"type": "text",
+							"contentType": "application/json"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/storage/upload",
+					"host": ["{{baseUrl}}"],
+					"path": [
+						"api",
+						"v1",
+						"storage",
+						"upload"
+					]
+				},
+				"description": "Upload a file with metadata to the storage service"
+			}
+		},
+		{
+			"name": "List Files",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer your-jwt-token",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/storage/files?page=0&size=10",
+					"host": ["{{baseUrl}}"],
+					"path": [
+						"api",
+						"v1",
+						"storage",
+						"files"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				},
+				"description": "List files with pagination"
+			}
+		},
+		{
+			"name": "Get File",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer your-jwt-token",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/storage/files/{{fileId}}",
+					"host": ["{{baseUrl}}"],
+					"path": [
+						"api",
+						"v1",
+						"storage",
+						"files",
+						"{{fileId}}"
+					]
+				},
+				"description": "Get file metadata by ID"
+			}
+		},
+		{
+			"name": "Delete File",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer your-jwt-token",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/storage/files/{{fileId}}",
+					"host": ["{{baseUrl}}"],
+					"path": [
+						"api",
+						"v1",
+						"storage",
+						"files",
+						"{{fileId}}"
+					]
+				},
+				"description": "Delete a file by ID"
+			}
+		},
+		{
+			"name": "Update Metadata",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer your-jwt-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"metadata\": {\n        \"key1\": \"updated-value1\",\n        \"key2\": \"updated-value2\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/storage/files/{{fileId}}/metadata",
+					"host": ["{{baseUrl}}"],
+					"path": [
+						"api",
+						"v1",
+						"storage",
+						"files",
+						"{{fileId}}",
+						"metadata"
+					]
+				},
+				"description": "Update file metadata"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

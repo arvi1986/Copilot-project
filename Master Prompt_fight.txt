@@ -1,0 +1,83 @@
+// Context & Technology Stack
+I am building a production-grade microservice in Java using the latest version of Spring Boot. I am also using Lombok for boilerplate code reduction, SLF4J for logging, and JUnit 5 with Mockito for testing.
+
+
+// Build rules
+My preferred build tool is maven3 and jdk17.  add dependencies with correct version compatible with java17 and spring boot 3.2.2
+
+// Global API Rules
+- All APIs must handle authorization using a JWT token in the "Authorization" header. Validate the JWT using a Spring Request Filter.
+- All APIs must handle a distributed tracing ID via a "X-Correlation-ID" header. If the header is provided, use it. If not, generate a new UUID. Add this ID to the MDC (Mapped Diagnostic Context) for every log entry.
+
+// Functional Requirements
+- Create a RESTful microservice with the following endpoints:
+
+    1. Flight Management:
+        - POST /api/v1/flights: Register a new flight with details (flight number, aircraft, scheduled departure/arrival)
+        - GET /api/v1/flights: Retrieve all scheduled flights
+        - GET /api/v1/flights/{flightId}: Get specific flight details
+        - PUT /api/v1/flights/{flightId}/status: Update flight status (SCHEDULED, BOARDING, TAKEOFF, AIRBORNE, LANDING, LANDED)
+
+    2. Runway Operations:
+        - GET /api/v1/runways: Get all runway statuses
+        - POST /api/v1/runways/{runwayId}/assign: Assign runway to a flight
+        - PUT /api/v1/runways/{runwayId}/status: Update runway status (AVAILABLE, OCCUPIED, MAINTENANCE)
+
+    3. Take-off Management:
+        - POST /api/v1/takeoff/request: Request takeoff clearance for a flight
+        - PUT /api/v1/takeoff/{flightId}/confirm: Confirm takeoff execution
+        - GET /api/v1/takeoff/queue: Get current takeoff queue
+
+    4. Landing Management:
+        - POST /api/v1/landing/request: Request landing clearance
+        - PUT /api/v1/landing/{flightId}/confirm: Confirm landing execution
+        - GET /api/v1/landing/queue: Get current landing queue
+
+// Core Domain Entities:
+- Flight (id, flightNumber, aircraft, status, scheduledDeparture, scheduledArrival)
+- Runway (id, name, status, currentFlight)
+- Aircraft (id, type, capacity, airline)
+- TakeoffQueue (id, flight, priority, requestTime)
+- LandingQueue (id, flight, priority, requestTime)
+
+// Business Rules:
+- A runway can only be assigned to one flight at a time
+- Takeoff/Landing clearance requires:
+    * Available runway
+    * Appropriate weather conditions
+    * No conflicts with other aircraft
+- Priority in queues based on:
+    * Emergency status
+    * Fuel status
+    * Scheduled time
+    * Queue entry time
+
+// Validation Rules
+- The POST request DTO must be non-null.
+- The `folderpath` field must be a valid, non-blank URL.
+- The `emails` list must be non-null and not empty.
+
+// Error Handling
+- Use a @RestControllerAdvice to handle exceptions globally across all controllers. Specifically, return a 400 Bad Request for client-side errors and a 500 Internal Server Error for unhandled exceptions.
+
+// Performance, Scalability, and Resilience
+- The service should be designed to handle a high transaction per second (TPS) rate.
+- Implement a retry mechanism for all downstream dependencies.
+- Implement a circuit breaker pattern to prevent cascading failures.
+
+// Database Configuration
+- Configure the application to connect to a PostgreSQL database.
+- Use environment variables for all sensitive information.
+- The environment variables are: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and `DB_PASSWORD`.
+- The application should be configured to use the `org.postgresql.Driver`.
+
+// Code Style & Architectural Rules
+- Use dependency injection via a constructor, utilizing the @RequiredArgsConstructor annotation.
+- Use a separate controller and service class to follow a layered architecture.
+
+// Testing Rules
+- For the controller, write tests to cover a successful (200 OK) scenario, as well as client-side errors (400 Bad Request) for all validation rules.
+- For the service, write tests to cover a successful downstream call and also a failure scenario (where the downstream call throws an exception).
+- Use Mockito to mock dependencies and JUnit 5 for assertions.
+- Ensure that the tests cover at least 80% of the codebase.
+- Any update to the codebase must be accompanied by corresponding tests to maintain or improve code coverage.
