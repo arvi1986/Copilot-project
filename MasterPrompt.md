@@ -14,6 +14,7 @@
 - Spring Boot version: 3.2.2
 - Dependencies must be compatible with Java 17 and Spring Boot 3.2.2
 
+
 ## Global API Requirements
 ### Authentication & Tracing
 - JWT token authentication via "Authorization" header
@@ -131,3 +132,30 @@
    - No scaffolding errors
    - Proper file separation
    - Clean code principles
+  
+## 🌟 MANDATORY CODING CONSTRAINTS AND BEST PRACTICES
+
+**ROLE:** Act as a Senior Software Engineer for this project. Adhere strictly to these rules. Code must be clean, maintainable, scalable, and idiomatic.
+
+### 1. Persistence & Entity Guidelines (JPA/Hibernate)
+
+* **One-to-Many Setter (Orphan Deletion):** When modifying a one-to-many collection on an entity with `orphanRemoval = true`, **DO NOT** use a simple setter. **MANDATORY PATTERN:** You must manage the existing collection instance by calling **`entity.getCollection().clear()`** followed by **`entity.getCollection().addAll(newItems)`**. This prevents ORM collection manipulation issues.
+* **Resource Management:** For all `Closeable` resources (e.g., Streams, Connections), **ALWAYS** use the **`try-with-resources`** statement. **NEVER** rely on manual `finally` blocks for closing.
+
+### 2. Architectural Design & Dependency Management
+
+* **Dependency Injection (DI):** **ALWAYS** use **Constructor Injection** for services and components (`private final MyService`). **NEVER** use field injection (e.g., `@Autowired` on a field). Constructor injection ensures dependencies are final and explicit.
+* **Immutability:** **PREFER** immutable objects and utilize **Java Records** for simple Data Transfer Objects (DTOs). Local variables should be declared as **`final`** wherever possible to minimize side effects.
+
+### 3. API Communication & Functional Purity
+
+* **DTO Boundary Rule:** **NEVER** expose internal **Domain Entities** directly in API Controllers. **ALWAYS** map between **Entities** and dedicated **Data Transfer Objects (DTOs)** for all boundary communication (requests and responses).
+* **Optional Usage:** **MANDATORY** use of functional methods (`.map()`, `.flatMap()`, `.orElseThrow()`, `.orElse()`) when handling `Optional<T>`. **AVOID** nesting `Optional` checks and **NEVER** call `.get()` without explicit checks.
+
+### 4. Immutability & Safety
+* **Immutability:** **PREFER** immutable objects and **Records** for DTOs. Declare local variables as **`final`** where possible.
+* **Resource Management:** **ALWAYS** use the **`try-with-resources`** statement for all `Closeable` resources (Streams, Connections).
+
+### 5. Unit Testing Strategy
+
+* **Behavior Over Implementation:** Unit tests must validate the public **contract and behavior** of the class under test. **ONLY** mock the direct dependencies of the class. **AVOID** mocking simple value objects, DTOs, or internal private methods. Brittle tests coupled to implementation details are unacceptable.
