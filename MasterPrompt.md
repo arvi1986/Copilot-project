@@ -1,29 +1,43 @@
 # Spring Boot Microservice Master Requirements
 
-## Context & Technology Stack
-- Spring Boot 3.2.2
-- Java 17
-- Lombok
-- SLF4J
-- JUnit 5 with Mockito
-- Maven 3
+## Overview  
+This prompt defines guidelines for developing a Spring Boot microservice as a Senior Software Engineer. The goal is to deliver clean, maintainable, scalable, idiomatic Java 17 code following best practices. The assistant must strictly adhere to the constraints and architectural principles below.
 
-## Build Configuration
-- Build tool: Maven 3
-- JDK: 17
-- Spring Boot version: 3.2.2
-- Dependencies must be compatible with Java 17 and Spring Boot 3.2.2
+---
 
+## Context & Technology Stack  
+- Spring Boot 3.2.2  
+- Java 17  
+- Lombok  
+- SLF4J  
+- JUnit 5 with Mockito  
+- Maven 3  
 
-## Global API Requirements
-### Authentication & Tracing
-- JWT token authentication via "Authorization" header
-- Distributed tracing using "X-Correlation-ID" header
-  - Use provided ID or generate UUID
-  - Include in MDC for logging
+---
+
+## Build Configuration  
+- Build tool: Maven 3  
+- JDK: 17  
+- Spring Boot version: 3.2.2  
+- Dependencies compatible with Java 17 and Spring Boot 3.2.2
+
+---
+
+## Global API Requirements  
+
+### Authentication & Tracing  
+- JWT token authentication via "Authorization" header  
+- Distributed tracing using "X-Correlation-ID" header  
+  - Use provided ID or generate UUID if missing  
+  - Include ID in MDC for logging
+ 
+---
 
 ## Functional Requirements
-### Storage Service Endpoints
+*(This section varies by use case and is excluded from this analysis)*
+
+### Sample
+Storage Service Endpoints
 
 1. **File/Object Management**
    - `POST /api/v1/storage/upload` - Upload new file/object with metadata
@@ -58,8 +72,10 @@
    - description
    - createdAt
    - owner
+  
+---
 
-### Business Rules
+## Business Rules
 - Authorization required for file operations
 - File validation for size and type
 - Unique metadata keys per file
@@ -68,70 +84,57 @@
 - Admin-only bucket creation
 - Mandatory bucket assignment for files
 
+---
+
 ## Validation Requirements
 - Non-null POST request DTO
 - Valid, non-blank folderpath URL
 - Non-null, non-empty emails list
 
-## Error Handling
-- Global exception handling via `@RestControllerAdvice`
-- HTTP 400 for client errors
-- HTTP 500 for system errors
+---
 
-## Performance & Resilience
-- High TPS design
-- Retry mechanism for dependencies
-- Circuit breaker implementation
+## Error Handling & Resilience  
+- Use `@RestControllerAdvice` for centralized exception handling  
+- Return HTTP 400 for client errors and HTTP 500 for system errors  
+- Design for high TPS  
+- Implement retry mechanisms and circuit breakers 
 
-## Database Configuration
-### PostgreSQL Setup
-- Environment variables:
-  - `DB_HOST`
-  - `DB_PORT`
-  - `DB_NAME`
-  - `DB_USERNAME`
-  - `DB_PASSWORD`
-- Driver: `org.postgresql.Driver`
+---
 
-## Architecture & Code Style
-- Constructor-based dependency injection with `@RequiredArgsConstructor`
-- Layered architecture (Controller, Service)
-- SOLID principles
-- Specific class imports (no wildcards)
-- Lombok for boilerplate reduction
-- Builder pattern for DTOs
+## DB Setup  
+- use postgres as default, H2 for local environment . Add required dependencies in pom.xml
+- Environment variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`  
+- postgres Driver: `org.postgresql.Driver` 
+- H2 Driver: `org.h2.Driver`
 
-## Testing Requirements
-- Controller tests: 200 OK and 400 Bad Request scenarios
-- Service tests: successful and failure scenarios
-- Mockito for mocking
-- JUnit 5 for assertions
-- 80% minimum code coverage
-- Tests required for all new code
-- create a postman collections for each controller including all endpoints with examples
+---
 
-## Code Generation Guidelines
-1. **Code Structure**
-   - Single class per file
-   - Short, focused methods
-   - Meaningful naming
-   - Avoid deep nesting
+### Dependency Injection  
+- Always use constructor injection (`@RequiredArgsConstructor`)  
+- Never use field injection  
 
-2. **Java Features**
-   - Java 17 features (records, sealed classes)
-   - Immutable where possible
-   - Optional for null handling
-   - Constants over magic numbers
+### Layered Architecture  
+- Separate layers: Controller, Service, Repository  
+- Follow SOLID principles  
 
-3. **Logging**
-   - SLF4J implementation
-   - Appropriate log levels
-   - Contextual information
+### Coding Practices  
+- Use Lombok  
+- Builder pattern for DTOs  
+- Specific imports only (no wildcards)  
+- Manage entity collections by clearing then adding new items 
 
-4. **Quality Assurance**
-   - No scaffolding errors
-   - Proper file separation
-   - Clean code principles
+---
+
+## Testing Strategy  
+- Controller tests for success and bad request  
+- Service tests for success and failure  
+- Mockito for mocking  
+- JUnit 5 for assertions  
+- Minimum 80% code coverage  
+- Postman collections covering all endpoints  
+- Focused unit tests mocking only direct dependencies
+
+---    
   
 ## 🌟 MANDATORY CODING CONSTRAINTS AND BEST PRACTICES
 
@@ -159,3 +162,39 @@
 ### 5. Unit Testing Strategy
 
 * **Behavior Over Implementation:** Unit tests must validate the public **contract and behavior** of the class under test. **ONLY** mock the direct dependencies of the class. **AVOID** mocking simple value objects, DTOs, or internal private methods. Brittle tests coupled to implementation details are unacceptable.
+
+
+---
+
+## General Code Generation Guidelines
+1. **Code Structure**
+   - Single class per file
+   - Short, focused methods
+   - Meaningful naming
+   - Avoid deep nesting
+
+2. **Java Features**
+   - Java 17 features (records, sealed classes)
+   - Immutable where possible
+   - Optional for null handling
+   - Constants over magic numbers
+
+3. **Logging**
+   - SLF4J implementation
+   - Appropriate log levels
+   - Contextual information
+
+4. **Quality Assurance**
+   - No scaffolding errors
+   - Proper file separation
+   - Clean code principles
+  
+---
+
+## Output Expectations  
+- Provide clear, working, testable, maintainable, and performant code that aligns with best engineering practices.
+- Aim for clarity, simplicity, and extensibility in all generated solutions
+- Address edge cases or ambiguity explicitly with clarifying assumptions or questions
+- When ambiguity arises or inputs conflict, ask clarifying questions or state assumptions explicitly to ensure aligned expectations and correctness
+
+---
